@@ -2,3 +2,7 @@ d:\users\t803840\documents\visual studio 2010\Projects\EPO.Calculo\EPO.Calculo.M
 d:\users\t803840\documents\visual studio 2010\Projects\EPO.Calculo\EPO.Calculo.Motor\bin\Debug\EPO.Calculo.Motor.pdb
 d:\users\t803840\documents\visual studio 2010\Projects\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.exe
 d:\users\t803840\documents\visual studio 2010\Projects\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.pdb
+D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.exe
+D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.pdb
+D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\bin\Debug\EPO.Calculo.Motor.exe
+D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\bin\Debug\EPO.Calculo.Motor.pdb

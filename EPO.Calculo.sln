@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPO.Calculo.Motor", "EPO.Calculo.Motor\EPO.Calculo.Motor.csproj", "{0FC504B6-B57A-4FD2-A82E-FFA3850DD0FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epo.Calculo.Web", "Epo.Calculo.Web\Epo.Calculo.Web.csproj", "{26A1CA20-3D25-4F09-894F-44198EE2EC30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,16 @@ Global
 		{0FC504B6-B57A-4FD2-A82E-FFA3850DD0FD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{0FC504B6-B57A-4FD2-A82E-FFA3850DD0FD}.Release|x86.ActiveCfg = Release|x86
 		{0FC504B6-B57A-4FD2-A82E-FFA3850DD0FD}.Release|x86.Build.0 = Release|x86
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{26A1CA20-3D25-4F09-894F-44198EE2EC30}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
