@@ -29,59 +29,72 @@ namespace EPO.Calculo.Motor
             //Console.ReadKey();
 
 
-            var responseValue = string.Empty;
-            var request = (HttpWebRequest)WebRequest.Create("https://copadosfilmes.azurewebsites.net/api/filmes");
-            request.Method = "GET";
-            request.ContentLength = 0;
-            request.ContentType = "application/json";
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            //var responseValue = string.Empty;
+            //var request = (HttpWebRequest)WebRequest.Create("https://copadosfilmes.azurewebsites.net/api/filmes");
+            //request.Method = "GET";
+            //request.ContentLength = 0;
+            //request.ContentType = "application/json";
+            //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             
-            using (var response = (HttpWebResponse)request.GetResponse())
-            {
-                using (var responseStream = response.GetResponseStream())
-                {
-                    if (responseStream != null)
-                        using (var reader = new StreamReader(responseStream))
-                        {
-                            responseValue = reader.ReadToEnd();
-                        }
-                }
-            }
+            //using (var response = (HttpWebResponse)request.GetResponse())
+            //{
+            //    using (var responseStream = response.GetResponseStream())
+            //    {
+            //        if (responseStream != null)
+            //            using (var reader = new StreamReader(responseStream))
+            //            {
+            //                responseValue = reader.ReadToEnd();
+            //            }
+            //    }
+            //}
 
-            DataContractJsonSerializer jsonConvert = new DataContractJsonSerializer(typeof(List<Filme>));
-            MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(responseValue));
-            List<Filme> lstFilme = (List<Filme>)jsonConvert.ReadObject(ms);
+            //DataContractJsonSerializer jsonConvert = new DataContractJsonSerializer(typeof(List<Filme>));
+            //MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(responseValue));
+            //List<Filme> lstFilme = (List<Filme>)jsonConvert.ReadObject(ms);
 
-            lstFilme = lstFilme.OrderBy(c => c.titulo).ToList();
+            //lstFilme = lstFilme.OrderBy(c => c.titulo).ToList();
 
-            foreach (var item in lstFilme.Take(8).ToList())
-            {
-                Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
-            }
+            //foreach (var item in lstFilme.Take(8).ToList())
+            //{
+            //    Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
+            //}
 
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("Copa Filmes Quartas de Final");
-            foreach (var item in new Filme().DecidirQuartasDeFinal(lstFilme))
-            {
-                Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
-            }
+            //Console.WriteLine("-----------------------------------------------------------------");
+            //Console.WriteLine("Copa Filmes Quartas de Final");
+            //foreach (var item in new Filme().DecidirQuartasDeFinal(lstFilme))
+            //{
+            //    Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
+            //}
 
 
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("Copa Filmes Semi Final");
-            foreach (var item in new Filme().DecidirSemiFinal(new Filme().DecidirQuartasDeFinal(lstFilme)))
-            {
-                Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
-            }
+            //Console.WriteLine("-----------------------------------------------------------------");
+            //Console.WriteLine("Copa Filmes Semi Final");
+            //foreach (var item in new Filme().DecidirSemiFinal(new Filme().DecidirQuartasDeFinal(lstFilme)))
+            //{
+            //    Console.WriteLine(string.Concat(item.titulo, " - ", item.ano, " - ", item.nota));
+            //}
 
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("Copa Filmes Final");
-            int i = 1;
-            foreach (var item in new Filme().DecidirFinal(new Filme().DecidirSemiFinal(new Filme().DecidirQuartasDeFinal(lstFilme))))
-            {
-                Console.WriteLine(string.Concat(i," º ",item.titulo, " - ", item.ano, " - ", item.nota));
-                i++;
-            }
+            //Console.WriteLine("-----------------------------------------------------------------");
+            //Console.WriteLine("Copa Filmes Final");
+            //int i = 1;
+            //foreach (var item in new Filme().DecidirFinal(new Filme().DecidirSemiFinal(new Filme().DecidirQuartasDeFinal(lstFilme))))
+            //{
+            //    Console.WriteLine(string.Concat(i," º ",item.titulo, " - ", item.ano, " - ", item.nota));
+            //    i++;
+            //}
+
+            Filme filme = new Filme();
+            filme.id = @"123346&<""";
+            filme.titulo = "Teste><ç";
+            filme.nota = 1.2;
+            filme.ano = 2008;
+
+            Console.WriteLine(string.Format("id:{0} - titulo:{1} - nota:{2} - ano:{3}", filme.id, filme.titulo, filme.nota, filme.ano));
+
+            //filme.TransformarCaracteresHTML();
+
+            Console.WriteLine(string.Format("id:{0} - titulo:{1} - nota:{2} - ano:{3}", filme.id, filme.titulo, filme.nota, filme.ano));
+
             Console.ReadKey();
         }
 

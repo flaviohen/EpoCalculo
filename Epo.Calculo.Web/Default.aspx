@@ -2,36 +2,10 @@
     CodeBehind="Default.aspx.cs" Inherits="Epo.Calculo.Web._Default" %>
 
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <div ng-controller="customersCtrl">
-        <table>
-            <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Titulo
-                </th>
-                <th>
-                    Ano
-                </th>
-                <th>
-                    Nota
-                </th>
-            </tr>
-            <tr ng-repeat="x in filmes">
-                <td>
-                    {{x.id}}
-                </td>
-                <td>
-                    {{x.titulo}}
-                </td>
-                <td>
-                    {{x.ano}}
-                </td>
-                <td>
-                    {{x.nota}}
-                </td>
-            </tr>
-        </table>
-    </div>
+    <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label><br />
+    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label><br />
+    <asp:Label ID="Label2" runat="server" Text="Label"></asp:Label><br />
+    <asp:Label ID="Label4" runat="server" Text="Label"></asp:Label><br />
+    <asp:Label ID="Label5" runat="server" Text="Label"></asp:Label><br />
+    <asp:Label ID="Label6" runat="server" Text="Label"></asp:Label>
 </asp:Content>

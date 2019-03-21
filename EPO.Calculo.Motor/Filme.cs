@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
+using System.IO;
+using System.Net;
+using System.Reflection;
 
 namespace EPO.Calculo.Motor
 {
@@ -12,7 +16,18 @@ namespace EPO.Calculo.Motor
         public string titulo { get; set; }
         public int ano { get; set; }
         public double nota { get; set; }
+        public List<Pessoa> lstPessoa { get; set; }
+        public Pessoa Pessoa { get; set; }
 
+        public Filme() 
+        {
+            lstPessoa = new List<Pessoa>();
+            lstPessoa.Add(new Pessoa { ID = "1", Nome = "Flavio Henrique <&>ç", Idade = 30 });
+            lstPessoa.Add(new Pessoa { ID = "2", Nome = "Mateus & Alonso", Idade = 20 });
+            lstPessoa.Add(new Pessoa { ID = "3", Nome = "Fernando >&ç Silva", Idade = 19 });
+            lstPessoa.Add(new Pessoa { ID = "4", Nome = "Flávio <>ç Macedo", Idade = 18 });
+            lstPessoa.Add(new Pessoa { ID = "5", Nome = "Cassandra & Silva &", Idade = 40 });
+        }
 
         public List<Filme> GerarCampeonato(List<Filme> filmes)
         {
@@ -84,6 +99,37 @@ namespace EPO.Calculo.Motor
             lstFilmeFinal.Add(FilmeSegundoLugar);
 
             return lstFilmeFinal;
+        }
+
+
+        public void TransformarCaracteresHTML<T>()
+        {
+            PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo item in properties)
+            {
+                var method = item.GetGetMethod();
+                var propertyType = item.PropertyType;
+                var value2 = item.GetValue(this, null);
+                if (item.PropertyType.Name == "String")
+                {
+                    string value = item.GetValue(this, null).ToString();
+                    //byte[] bytes = Encoding.Default.GetBytes(value);
+                    //value = Encoding.UTF8.GetString(bytes);
+                    //string caracteresSubstituido = HttpUtility.HtmlEncode(value);
+
+                    //item.SetValue(objeto, caracteresSubstituido, null);
+                }
+                else
+                {
+                    if (!item.PropertyType.IsClass && !item.PropertyType.IsPrimitive)
+                    {
+                        //IList<N> lstObject = (List<N>)value2.GetType().InvokeMember("ToList", BindingFlags.InvokeMethod, null, value2, null);
+
+
+                    }
+                }
+
+            }
         }
     }
 }

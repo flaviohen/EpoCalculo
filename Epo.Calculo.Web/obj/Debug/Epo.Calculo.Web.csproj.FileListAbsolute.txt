@@ -2,3 +2,6 @@ D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\Epo.Calculo.Web.dll
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\Epo.Calculo.Web.pdb
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web.dll
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web.pdb
+D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web.csprojResolveAssemblyReference.cache
+D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\EPO.Calculo.Motor.exe
+D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\EPO.Calculo.Motor.pdb
