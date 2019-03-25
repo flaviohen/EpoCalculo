@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoberturaAdicional.cs" />
+    <Compile Include="DadosAgroEquipamentos.cs" />
     <Compile Include="EpoCalculo.cs" />
     <Compile Include="Filme.cs" />
     <Compile Include="Pessoa.cs" />

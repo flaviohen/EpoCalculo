@@ -6,6 +6,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.OleDb;
 using System.Data;
+using EPO.Calculo.Motor;
+using System.Reflection;
+using System.IO;
 
 namespace Epo.Calculo.Web
 {
@@ -19,27 +22,224 @@ namespace Epo.Calculo.Web
         protected void btnImportar_Click(object sender, EventArgs e)
         {
             string arquivo = Server.MapPath("~/Excel/") + FileUpload1.PostedFile.FileName;
-            FileUpload1.SaveAs(arquivo);
-            string strConexao = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=0\"", arquivo);
-            OleDbConnection conn = new OleDbConnection(strConexao);
-            conn.Open();
-            DataTable dt = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-            //Cria o objeto dataset para receber o conteúdo do arquivo Excel
-            DataSet output = new DataSet();
-            foreach (DataRow row in dt.Rows)
+
+            if (File.Exists(arquivo)) 
             {
-                // obtem o noma da planilha corrente
-                string sheet = row["TABLE"].ToString();
-                // obtem todos as linhas da planilha corrente
-                OleDbCommand cmd = new OleDbCommand("SELECT * FROM [" + sheet + "]", conn);
-                cmd.CommandType = CommandType.Text;
-                // copia os dados da planilha para o datatable
-                DataTable outputTable = new DataTable(sheet);
-                output.Tables.Add(outputTable);
-                new OleDbDataAdapter(cmd).Fill(outputTable);
+                File.Delete(arquivo);
             }
-            GridView1.DataSource = output.Tables[0];
+
+            FileUpload1.SaveAs(arquivo);
+
+            //Usando Oledb para acesso aos dados do arquivo Excel
+            //string strConexao = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=0\"", arquivo);
+            //OleDbConnection conn = new OleDbConnection(strConexao);
+            //conn.Open();
+            //DataTable dt = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
+            ////Cria o objeto dataset para receber o conteúdo do arquivo Excel
+            //DataSet output = new DataSet();
+            //foreach (DataRow row in dt.Rows)
+            //{
+            //    // obtem o noma da planilha corrente
+            //    string sheet = row["TABLE"].ToString();
+            //    // obtem todos as linhas da planilha corrente
+            //    OleDbCommand cmd = new OleDbCommand("SELECT * FROM [" + sheet + "]", conn);
+            //    cmd.CommandType = CommandType.Text;
+            //    // copia os dados da planilha para o datatable
+            //    DataTable outputTable = new DataTable(sheet);
+            //    output.Tables.Add(outputTable);
+            //    new OleDbDataAdapter(cmd).Fill(outputTable);
+            //}
+            //GridView1.DataSource = output.Tables[0];
+            //GridView1.DataBind();
+
+            //Usando biblioteca do excel
+
+            Microsoft.Office.Interop.Excel._Application xlApp;
+            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
+            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
+            Microsoft.Office.Interop.Excel.Range range;
+
+
+            xlApp = new Microsoft.Office.Interop.Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Open(arquivo, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            range = xlWorkSheet.UsedRange;
+            List<string> lstColunas = new List<string>();
+
+            int linhas = range.Rows.Count;
+            int colunas = range.Columns.Count;
+            string valor = string.Empty;
+
+            List<DadosAgroEquipamentos> lstItemCotacao = new List<DadosAgroEquipamentos>();
+            DadosAgroEquipamentos dadosAgroEquipamentos = null;
+            CoberturaAdicional coberturaAdicional = null;
+            for (int l = 2; l <= linhas; l++)
+            {
+                dadosAgroEquipamentos = new DadosAgroEquipamentos();
+                dadosAgroEquipamentos.DataInicio = ValidarValor(dadosAgroEquipamentos.DataInicio, range.Cells[l, 1].Value2);
+                dadosAgroEquipamentos.DataFim = ValidarValor(dadosAgroEquipamentos.DataFim,range.Cells[l, 2].Value2);
+                dadosAgroEquipamentos.TipoPessoa = ValidarValor(dadosAgroEquipamentos.TipoPessoa, range.Cells[l, 3].Value2);
+                dadosAgroEquipamentos.NumeroCpfCnpj = ValidarValor(dadosAgroEquipamentos.NumeroCpfCnpj, range.Cells[l, 4].Value2);
+                dadosAgroEquipamentos.NomeSegurado = ValidarValor(dadosAgroEquipamentos.NomeSegurado, range.Cells[l, 5].Value2);
+                dadosAgroEquipamentos.Item =  ValidarValor(dadosAgroEquipamentos.Item, range.Cells[l, 6].Value2);
+                dadosAgroEquipamentos.TipoSeguro = ValidarValor(dadosAgroEquipamentos.TipoSeguro, range.Cells[l, 7].Value2);
+                dadosAgroEquipamentos.ApoliceAnterior = ValidarValor(dadosAgroEquipamentos.ApoliceAnterior, range.Cells[l, 8].Value2);
+                dadosAgroEquipamentos.SeguradoAnterior = ValidarValor(dadosAgroEquipamentos.SeguradoAnterior ,range.Cells[l, 9].Value2);
+                dadosAgroEquipamentos.AnosExperiencia = ValidarValor(dadosAgroEquipamentos.AnosExperiencia, range.Cells[l, 10].Value2);
+                dadosAgroEquipamentos.SinistroPremio = ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 11].Value2) > 0 ? ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l,11].Value2) / 100 : 0;
+                dadosAgroEquipamentos.Equipamento = ValidarValor(dadosAgroEquipamentos.Equipamento ,range.Cells[l, 12].Value2);
+                dadosAgroEquipamentos.Financiado = ValidarValor(dadosAgroEquipamentos.Financiado, range.Cells[l, 13].Value2);
+                dadosAgroEquipamentos.Ano = ValidarValor(dadosAgroEquipamentos.Ano,range.Cells[l, 14].Value2);
+                dadosAgroEquipamentos.Chassi = ValidarValor(dadosAgroEquipamentos.Chassi, range.Cells[l, 15].Value2);
+                dadosAgroEquipamentos.Fabricante =ValidarValor(dadosAgroEquipamentos.Fabricante ,range.Cells[l, 16].Value2);
+                dadosAgroEquipamentos.Modelo = ValidarValor(dadosAgroEquipamentos.Modelo, range.Cells[l, 17].Value2);
+                dadosAgroEquipamentos.NumeroMotor = ValidarValor(dadosAgroEquipamentos.NumeroMotor, range.Cells[l, 18].Value2);
+                dadosAgroEquipamentos.NotaFiscal = ValidarValor(dadosAgroEquipamentos.NotaFiscal, range.Cells[l, 19].Value2);
+                dadosAgroEquipamentos.DataSaidaNotaFiscal = ValidarValor(dadosAgroEquipamentos.DataSaidaNotaFiscal,range.Cells[l, 20].Value2);
+                dadosAgroEquipamentos.NumeroSerie = ValidarValor(dadosAgroEquipamentos.NumeroSerie, range.Cells[l, 21].Value2);
+                dadosAgroEquipamentos.NumeroCep = ValidarValor(dadosAgroEquipamentos.NumeroCep, range.Cells[l, 22].Value2);
+                dadosAgroEquipamentos.NumeroLocal = ValidarValor(dadosAgroEquipamentos.NumeroLocal, range.Cells[l, 23].Value2);
+                dadosAgroEquipamentos.ValorRisco = ValidarValor(dadosAgroEquipamentos.ValorRisco, range.Cells[l, 24].Value2);
+                dadosAgroEquipamentos.Comissao = ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 25].Value2) > 0 ? ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 25].Value2) / 100 : 0;
+                dadosAgroEquipamentos.Desconto = ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 26].Value2) > 0 ? ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 26].Value2) / 100 : 0;
+                dadosAgroEquipamentos.Agravo = ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 27].Value2) > 0 ? ValidarValor(dadosAgroEquipamentos.SinistroPremio, range.Cells[l, 27].Value2) / 100 : 0; 
+                dadosAgroEquipamentos.CodigoCoberturaBasica = ValidarValor(dadosAgroEquipamentos.CodigoCoberturaBasica, range.Cells[l, 28].Value2);
+                dadosAgroEquipamentos.LmiCoberturaBasica = ValidarValor(dadosAgroEquipamentos.LmiCoberturaBasica, range.Cells[l, 29].Value2);
+                dadosAgroEquipamentos.lstCoberturasAdicional = new List<CoberturaAdicional>();
+
+                for (int c = 30; c <= colunas; c += 2)
+                {
+                    if (range.Cells[l, c] != null && range.Cells[l, c].Value2 != null)
+                    {
+                        coberturaAdicional = new CoberturaAdicional();
+                        coberturaAdicional.CodigoCoberturaAdicional = Convert.ToInt32(range.Cells[l, c].Value2.ToString());
+                        coberturaAdicional.LmiCoberturaAdicional = Convert.ToDecimal(range.Cells[l, c + 1].Value2.ToString());
+                        dadosAgroEquipamentos.lstCoberturasAdicional.Add(coberturaAdicional);
+                    }
+                }
+
+                lstItemCotacao.Add(dadosAgroEquipamentos);
+            }
+
+            xlWorkBook.Close();
+            xlApp.Quit();
+
+            DataTable dt = new DataTable("Planilha");
+            DataRow linha;
+            List<int> lstColunasCoberturaAdicional = new List<int>();
+
+            PropertyInfo[] propriedades = dadosAgroEquipamentos.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo propriedade in propriedades)
+            {
+                if (propriedade.PropertyType.IsPrimitive ||
+                    propriedade.PropertyType.Name == "String" ||
+                    propriedade.PropertyType.Name == "DateTime" ||
+                    propriedade.PropertyType.Name == "Decimal")
+                {
+                    dt.Columns.Add(propriedade.Name);
+                }
+            }
+
+            foreach (DadosAgroEquipamentos itemCotacao in lstItemCotacao)
+            {
+                lstColunasCoberturaAdicional.Add(itemCotacao.lstCoberturasAdicional.Count);             
+            }
+
+            int quantidadeColunasCobAdicional = lstColunasCoberturaAdicional.Max();
+
+            for (int i = 1; i <= quantidadeColunasCobAdicional; i++)
+            {
+                dt.Columns.Add("Adicional" + i, typeof(int));
+                dt.Columns.Add("LMI" + i, typeof(decimal));
+            }
+
+            foreach (DadosAgroEquipamentos itemCotacao in lstItemCotacao)
+            {
+                linha = dt.NewRow();
+                linha["DataInicio"] = itemCotacao.DataInicio.ToString("dd/MM/yyyy");
+                linha["DataFim"] = itemCotacao.DataFim.ToString("dd/MM/yyyy");
+                linha["TipoPessoa"] = itemCotacao.TipoPessoa;
+                linha["NumeroCpfCnpj"] = itemCotacao.NumeroCpfCnpj;
+                linha["NomeSegurado"] = itemCotacao.NomeSegurado;
+                linha["Item"] = itemCotacao.Item;
+                linha["TipoSeguro"] = itemCotacao.TipoSeguro;
+                linha["ApoliceAnterior"] = itemCotacao.ApoliceAnterior;
+                linha["SeguradoAnterior"] = itemCotacao.SeguradoAnterior;
+                linha["AnosExperiencia"] = itemCotacao.AnosExperiencia;
+                linha["SinistroPremio"] = itemCotacao.SinistroPremio;
+                linha["Equipamento"] = itemCotacao.Equipamento;
+                linha["Financiado"] = itemCotacao.Financiado;
+                linha["Ano"] = itemCotacao.Ano;
+                linha["Chassi"] = itemCotacao.Chassi;
+                linha["Fabricante"] = itemCotacao.Fabricante;
+                linha["Modelo"] = itemCotacao.Modelo;
+                linha["NumeroMotor"] = itemCotacao.NumeroMotor;
+                linha["NotaFiscal"] = itemCotacao.NotaFiscal;
+                linha["DataSaidaNotaFiscal"] = itemCotacao.DataSaidaNotaFiscal.ToString("dd/MM/yyyy");
+                linha["NumeroSerie"] = itemCotacao.NumeroSerie;
+                linha["NumeroCep"] = itemCotacao.NumeroCep;
+                linha["NumeroLocal"] = itemCotacao.NumeroLocal;
+                linha["ValorRisco"] = itemCotacao.ValorRisco;
+                linha["Comissao"] = itemCotacao.Comissao;
+                linha["Desconto"] = itemCotacao.Desconto;
+                linha["Agravo"] = itemCotacao.Agravo;
+                linha["CodigoCoberturaBasica"] = itemCotacao.CodigoCoberturaBasica;
+                linha["LmiCoberturaBasica"] = itemCotacao.LmiCoberturaBasica;
+
+                for (int i = 0; i < itemCotacao.lstCoberturasAdicional.Count; i++)
+                {
+                    linha["Adicional" + (i + 1)] = itemCotacao.lstCoberturasAdicional[i].CodigoCoberturaAdicional;
+                    linha["LMI" + (i + 1)] = itemCotacao.lstCoberturasAdicional[i].LmiCoberturaAdicional;
+                }
+
+                dt.Rows.Add(linha);
+            }
+
+            
+            GridView1.DataSource = dt;
             GridView1.DataBind();
+        }
+
+        public static int ValidarValor(int propriedadem, dynamic objeto) 
+        {
+            int i_valor = 0;
+            if (objeto != null) int.TryParse(objeto.ToString(), out i_valor);
+            return i_valor;
+        }
+
+        public static long ValidarValor(long propriedade, dynamic objeto)
+        {
+            long l_valor = 0;
+            if (objeto != null) long.TryParse(objeto.ToString(), out l_valor);
+            return l_valor;
+        }
+
+        public static string ValidarValor(string propriedade, dynamic objeto)
+        {
+            return objeto != null ? objeto.ToString() : string.Empty;
+        }
+
+        public static DateTime ValidarValor(DateTime propriedade, dynamic objeto)
+        {
+            DateTime d_valor = DateTime.MinValue;
+            if (objeto != null) DateTime.TryParse(objeto.ToString().Replace(".","/"), out d_valor);
+            return d_valor;
+        }
+
+        public static decimal ValidarValor(decimal propriedade, dynamic objeto)
+        {
+            Decimal d_valor = 0;
+            if (objeto != null) Decimal.TryParse(objeto.ToString(), out d_valor);
+            return d_valor;
+        }
+
+        public static double ValidarValor(double propriedade, dynamic objeto)
+        {
+            double d_valor = 0;
+            if (objeto != null) Double.TryParse(objeto.ToString(), out d_valor);
+            return d_valor;
         }
     }
 }

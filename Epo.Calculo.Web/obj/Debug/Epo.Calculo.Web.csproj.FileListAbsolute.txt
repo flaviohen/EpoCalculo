@@ -5,3 +5,4 @@ D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web.csprojResolveAssemblyReference.cache
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\EPO.Calculo.Motor.exe
 D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\bin\EPO.Calculo.Motor.pdb
+D:\Users\T803840\Documents\EPO.Calculo\Epo.Calculo.Web\obj\Debug\Epo.Calculo.Web.csproj.ResolveComReference.cache
