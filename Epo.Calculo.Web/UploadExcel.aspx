@@ -4,7 +4,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Upload Excel</title>
+    <link href="Styles/bootstrap.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -14,21 +15,13 @@
             onclick="btnImportar_Click" />
     </div>
     <div style="clear:both; width:1000px; overflow:auto; margin-top:10px;">
-        <asp:GridView ID="GridView1" runat="server" CellPadding="4" ForeColor="#333333" 
-            GridLines="None">
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
-            <EditRowStyle BackColor="#999999" />
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <SortedAscendingCellStyle BackColor="#E9E7E2" />
-            <SortedAscendingHeaderStyle BackColor="#506C8C" />
-            <SortedDescendingCellStyle BackColor="#FFFDF8" />
-            <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+        <asp:GridView ID="GridView1" runat="server" CssClass="table">
         </asp:GridView>
     </div>
+    <div style="clear:both; width:1000px; margin-top:10px;" runat="server" id="MensagemErros" class="alert alert-danger">
+        
+    </div>
     </form>
+    <script src="Scripts/bootstrap.min.js" type="text/javascript"></script>
 </body>
 </html>
