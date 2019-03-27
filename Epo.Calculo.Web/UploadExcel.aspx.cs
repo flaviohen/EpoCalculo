@@ -18,13 +18,15 @@ namespace Epo.Calculo.Web
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            MensagemErros.Visible = false;
+            MensagemSucesso.Visible = false;
         }
 
         protected void btnImportar_Click(object sender, EventArgs e)
         {
             string arquivo = Server.MapPath("~/Excel/") + FileUpload1.PostedFile.FileName;
             string Erros = string.Empty;
+            MensagemErros.Visible = false;
             if (File.Exists(arquivo))
             {
                 File.Delete(arquivo);
@@ -35,9 +37,14 @@ namespace Epo.Calculo.Web
             GridView1.DataSource = RetornarDados(arquivo, out Erros);
             GridView1.DataBind();
 
-            if (!string.IsNullOrEmpty(Erros)) 
+            if (!string.IsNullOrEmpty(Erros))
             {
+                MensagemErros.Visible = true;
                 MensagemErros.InnerHtml = Erros;
+            }
+            else 
+            {
+                MensagemSucesso.Visible = true;
             }
 
             //Usando Oledb para acesso aos dados do arquivo Excel
@@ -397,16 +404,26 @@ namespace Epo.Calculo.Web
                 dt.Rows.Add(linha);
             }
             StringBuilder erroCampos = new StringBuilder();
+
+            //Validando campos obrigatórios da planinha ou se valores estão de acordo
             for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                
+            {    
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataInicio"].ToString(), "|", (i + 2), "|", "DataInicio"), DateTime.Now));
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataFim"].ToString(), "|", (i + 2), "|", "DataFim"), DateTime.Now));
-
-                //string.Concat(dt.Rows[i]["TipoPessoa"].ToString(), "|", (i + 2), "|", "TipoPessoa");
-                //string.Concat(dt.Rows[i]["NomeSegurado"].ToString(), "|", (i + 2), "|", "NomeSegurado");
-                //string.Concat(dt.Rows[i]["Item"].ToString(), "|", (i + 2), "|", "Item"));
-                //string.Concat(dt.Rows[i]["TipoSeguro"].ToString(), "|", (i + 2), "|", "TipoSeguro");
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoPessoa"].ToString(), "|", (i + 2), "|", "TipoPessoa"),string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCpfCnpj"].ToString(), "|", (i + 2), "|", "NumeroCpfCnpj"), long.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NomeSegurado"].ToString(), "|", (i + 2), "|", "NomeSegurado"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Item"].ToString(), "|", (i + 2), "|", "Item"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoSeguro"].ToString(), "|", (i + 2), "|", "TipoSeguro"),string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Equipamento"].ToString(), "|", (i + 2), "|", "Equipamento"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Financiado"].ToString(), "|", (i + 2), "|", "Financiado"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Ano"].ToString(), "|", (i + 2), "|", "Ano"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCep"].ToString(), "|", (i + 2), "|", "NumeroCep"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroLocal"].ToString(), "|", (i + 2), "|", "NumeroLocal"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["ValorRisco"].ToString(), "|", (i + 2), "|", "ValorRisco"), decimal.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Comissao"].ToString(), "|", (i + 2), "|", "Comissao"), double.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["CodigoCoberturaBasica"].ToString(), "|", (i + 2), "|", "CodigoCoberturaBasica"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["LmiCoberturaBasica"].ToString(), "|", (i + 2), "|", "LmiCoberturaBasica"), decimal.MinValue));
             }
             camposErro = erroCampos.ToString();
             return dt;
@@ -422,19 +439,159 @@ namespace Epo.Calculo.Web
                 var validacaoData = DateTime.TryParseExact(campos[0],"dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None, out tipoCampo);
                 if (!validacaoData) 
                 {
-                  mensagem = string.Format("<p><strong>Data Inválida.</strong> Ex formato na planinha: 10.10.2019 Linha <strong>{0}</strong> Coluna <strong>{1}</strong></p>", campos[1], campos[2]);
+                    mensagem = MsgDataInvalida(campos);
                 }
                 if (tipoCampo == DateTime.MinValue) 
                 {
-                    mensagem = string.Format("<p><strong>Data Inválida.</strong> Ex formato na planinha: 10.10.2019 Linha <strong>{0}</strong> Coluna <strong>{1}</strong></p>", campos[1], campos[2]);
+                    mensagem = MsgDataInvalida(campos);
                 }
             }
             catch (Exception)
             {
-                mensagem = string.Format("<p><strong>Campo inválido.</strong> Linha <strong>{0}</strong> Coluna <strong>{1}</strong></p>",campos[1], campos[2]);
+                mensagem = MsgCampoInvalido(campos);
             }
 
             return mensagem;
+        }
+
+        public string ValidarCampos(string campo, string tipoCampo) 
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            if (string.IsNullOrEmpty(campos[0])) 
+            {
+                mensagem = MsgCampoObrigatorio(campos);
+            }
+            return mensagem;
+        }
+
+
+        public string ValidarCampos(string campo, int tipoCampo)
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            try
+            {
+                if (string.IsNullOrEmpty(campos[0]))
+                {
+                    mensagem = MsgCampoObrigatorio(campos);
+                }
+                else 
+                {
+                    tipoCampo = Convert.ToInt32(campos[0]);
+                    if (tipoCampo == 0) 
+                    {
+                        mensagem = MsgCampoInvalido(campos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensagem = MsgCampoInvalido(campos);
+            }
+            
+            return mensagem;
+        }
+
+        public string ValidarCampos(string campo, decimal tipoCampo)
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            try
+            {
+                if (string.IsNullOrEmpty(campos[0]))
+                {
+                    mensagem = MsgCampoObrigatorio(campos);
+                }
+                else
+                {
+                    tipoCampo = Convert.ToDecimal(campos[0]);
+                    if (tipoCampo == 0)
+                    {
+                        mensagem = MsgCampoInvalido(campos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensagem = MsgCampoInvalido(campos);
+            }
+
+            return mensagem;
+        }
+
+        public string ValidarCampos(string campo, long tipoCampo)
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            try
+            {
+                if (string.IsNullOrEmpty(campos[0]))
+                {
+                    mensagem = MsgCampoObrigatorio(campos);
+                }
+                else
+                {
+                    tipoCampo = Convert.ToInt64(campos[0]);
+                    if (tipoCampo == 0)
+                    {
+                        mensagem = MsgCampoInvalido(campos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensagem = MsgCampoInvalido(campos);
+            }
+
+            return mensagem;
+        }
+
+        public string ValidarCampos(string campo, double tipoCampo)
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            try
+            {
+                if (string.IsNullOrEmpty(campos[0]))
+                {
+                    mensagem = MsgCampoObrigatorio(campos);
+                }
+                else
+                {
+                    tipoCampo = Convert.ToDouble(campos[0]);
+                    if (tipoCampo == 0)
+                    {
+                        mensagem = MsgCampoInvalido(campos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensagem = MsgCampoInvalido(campos);
+            }
+
+            return mensagem;
+        }
+
+        public string MsgCampoObrigatorio(string[] campos) 
+        {
+            return string.Format("<p><strong>Campo obrigatório não preenchido.</strong> Linha <strong>{0}</strong> e Coluna <strong>{1}</strong></p>", campos[1], campos[2]);
+        }
+
+        public string MsgCampoInvalido(string[] campos)
+        {
+            return string.Format("<p><strong>Campo inválido.</strong> Linha <strong>{0}</strong> Coluna <strong>{1}</strong></p>", campos[1], campos[2]);
+        }
+
+        public string MsgDataInvalida(string[] campos) 
+        {
+            return string.Format("<p><strong>Data Inválida.</strong> Ex formato na planinha: 10.10.2019 Linha <strong>{0}</strong> Coluna <strong>{1}</strong></p>", campos[1], campos[2]);
         }
 
         public static int ValidarValor(int propriedadem, dynamic objeto)
