@@ -274,13 +274,11 @@ namespace Epo.Calculo.Web
             Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
             Microsoft.Office.Interop.Excel.Range range;
 
-
             xlApp = new Microsoft.Office.Interop.Excel.Application();
             xlWorkBook = xlApp.Workbooks.Open(arquivo, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 
             range = xlWorkSheet.UsedRange;
-            List<string> ColunasObrigatorio = new List<string>();
 
             int linhas = range.Rows.Count;
             int colunas = range.Columns.Count;
@@ -289,7 +287,7 @@ namespace Epo.Calculo.Web
             List<DadosAgroEquipamentos> lstItemCotacao = new List<DadosAgroEquipamentos>();
             DadosAgroEquipamentos dadosAgroEquipamentos = null;
             CoberturaAdicional coberturaAdicional = null;
-
+            int colunasDinamicas = 1;
 
             for (int l = 2; l <= linhas; l++)
             {
@@ -323,12 +321,13 @@ namespace Epo.Calculo.Web
                         {
                             propriedades[c].SetValue(dadosAgroEquipamentos, ValidarValor(double.MinValue, range.Cells[l, c + 1].Value2), null);
                         }
+                        colunasDinamicas++;
                     }
                 }
 
                 dadosAgroEquipamentos.lstCoberturasAdicional = new List<CoberturaAdicional>();
 
-                for (int c = 30; c <= colunas; c += 2)
+                for (int c = colunasDinamicas; c <= colunas; c += 2)
                 {
                     if (range.Cells[l, c] != null && range.Cells[l, c].Value2 != null)
                     {
@@ -407,7 +406,8 @@ namespace Epo.Calculo.Web
 
             //Validando campos obrigatórios da planinha ou se valores estão de acordo
             for (int i = 0; i < dt.Rows.Count; i++)
-            {    
+            {
+                //Aqui adicionado campos obrigatorios
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataInicio"].ToString(), "|", (i + 2), "|", "DataInicio"), DateTime.Now));
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataFim"].ToString(), "|", (i + 2), "|", "DataFim"), DateTime.Now));
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoPessoa"].ToString(), "|", (i + 2), "|", "TipoPessoa"),string.Empty));
