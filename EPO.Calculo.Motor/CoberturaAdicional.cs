@@ -7,7 +7,7 @@ namespace EPO.Calculo.Motor
 {
     public class CoberturaAdicional
     {
-        public int CodigoCoberturaAdicional { get; set; }
-        public decimal LmiCoberturaAdicional { get; set; }
+        public string CodigoCoberturaAdicional { get; set; }
+        public string LmiCoberturaAdicional { get; set; }
     }
 }

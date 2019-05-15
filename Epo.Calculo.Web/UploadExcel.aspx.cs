@@ -332,11 +332,13 @@ namespace Epo.Calculo.Web
                     if (range.Cells[l, c] != null && range.Cells[l, c].Value2 != null)
                     {
                         coberturaAdicional = new CoberturaAdicional();
-                        coberturaAdicional.CodigoCoberturaAdicional = Convert.ToInt32(range.Cells[l, c].Value2.ToString());
-                        coberturaAdicional.LmiCoberturaAdicional = Convert.ToDecimal(range.Cells[l, c + 1].Value2.ToString());
+                        coberturaAdicional.CodigoCoberturaAdicional = range.Cells[l, c].Value2.ToString();
+                        coberturaAdicional.LmiCoberturaAdicional = range.Cells[l, c + 1].Value2.ToString();
                         dadosAgroEquipamentos.lstCoberturasAdicional.Add(coberturaAdicional);
                     }
                 }
+
+                colunasDinamicas = 1;
 
                 lstItemCotacao.Add(dadosAgroEquipamentos);
             }
@@ -370,8 +372,8 @@ namespace Epo.Calculo.Web
 
             for (int i = 1; i <= quantidadeColunasCobAdicional; i++)
             {
-                dt.Columns.Add("Adicional" + i, typeof(int));
-                dt.Columns.Add("LMI" + i, typeof(decimal));
+                dt.Columns.Add("Adicional" + i, typeof(string));
+                dt.Columns.Add("LMI" + i, typeof(string));
             }
 
             foreach (DadosAgroEquipamentos itemCotacao in lstItemCotacao)
@@ -424,6 +426,21 @@ namespace Epo.Calculo.Web
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Comissao"].ToString(), "|", (i + 2), "|", "Comissao"), double.MinValue));
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["CodigoCoberturaBasica"].ToString(), "|", (i + 2), "|", "CodigoCoberturaBasica"), int.MinValue));
                 erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["LmiCoberturaBasica"].ToString(), "|", (i + 2), "|", "LmiCoberturaBasica"), decimal.MinValue));
+
+                DataRow row = dt.Rows[i];
+                int contadorCoberburasAdicional = 1;
+                int qtdColunasAdicional = row.Table.Columns.Count - 15;
+                for (int j = 16; j < qtdColunasAdicional; j+=2)
+                {
+                    string cobeAdicional = row["Adicional" + contadorCoberburasAdicional].ToString();
+                    string lmiAdicional = row["LMI"+ contadorCoberburasAdicional].ToString();
+                    if (!string.IsNullOrEmpty(cobeAdicional) && !string.IsNullOrEmpty(lmiAdicional)) 
+                    {
+                        erroCampos.AppendLine(ValidarCampos(string.Concat(cobeAdicional, "|", (i + 1), "|", "Adicional" + contadorCoberburasAdicional), int.MinValue));
+                        erroCampos.AppendLine(ValidarCampos(string.Concat(lmiAdicional, "|", (i + 1), "|", "LMI" + contadorCoberburasAdicional), decimal.MinValue)); 
+                    }
+                    contadorCoberburasAdicional++;
+                }
             }
             camposErro = erroCampos.ToString();
             return dt;
