@@ -6,3 +6,4 @@ D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\bin\Debug\EPO.Calculo.M
 D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\bin\Debug\EPO.Calculo.Motor.pdb
 D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.exe
 D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.pdb
+D:\Users\T803840\Documents\EPO.Calculo\EPO.Calculo.Motor\obj\x86\Debug\EPO.Calculo.Motor.csprojResolveAssemblyReference.cache

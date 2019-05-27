@@ -11,6 +11,7 @@ using System.Reflection;
 using System.IO;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Epo.Calculo.Web
 {
@@ -410,27 +411,40 @@ namespace Epo.Calculo.Web
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 //Aqui adicionado campos obrigatorios
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataInicio"].ToString(), "|", (i + 2), "|", "DataInicio"), DateTime.Now));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataFim"].ToString(), "|", (i + 2), "|", "DataFim"), DateTime.Now));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoPessoa"].ToString(), "|", (i + 2), "|", "TipoPessoa"),string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCpfCnpj"].ToString(), "|", (i + 2), "|", "NumeroCpfCnpj"), long.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NomeSegurado"].ToString(), "|", (i + 2), "|", "NomeSegurado"), string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Item"].ToString(), "|", (i + 2), "|", "Item"), int.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoSeguro"].ToString(), "|", (i + 2), "|", "TipoSeguro"),string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Equipamento"].ToString(), "|", (i + 2), "|", "Equipamento"), int.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Financiado"].ToString(), "|", (i + 2), "|", "Financiado"), string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Ano"].ToString(), "|", (i + 2), "|", "Ano"), int.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCep"].ToString(), "|", (i + 2), "|", "NumeroCep"), string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroLocal"].ToString(), "|", (i + 2), "|", "NumeroLocal"), string.Empty));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["ValorRisco"].ToString(), "|", (i + 2), "|", "ValorRisco"), decimal.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Comissao"].ToString(), "|", (i + 2), "|", "Comissao"), double.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["CodigoCoberturaBasica"].ToString(), "|", (i + 2), "|", "CodigoCoberturaBasica"), int.MinValue));
-                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["LmiCoberturaBasica"].ToString(), "|", (i + 2), "|", "LmiCoberturaBasica"), decimal.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Produto"].ToString(), "|", (i + 1), "|", "Produto"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataInicio"].ToString(), "|", (i + 1), "|", "DataInicio"), DateTime.Now));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["DataFim"].ToString(), "|", (i + 1), "|", "DataFim"), DateTime.Now));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoPessoa"].ToString(), "|", (i + 1), "|", "TipoPessoa"),string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCpfCnpj"].ToString(), "|", (i + 1), "|", "NumeroCpfCnpj"), long.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NomeSegurado"].ToString(), "|", (i + 1), "|", "NomeSegurado"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Item"].ToString(), "|", (i + 1), "|", "Item"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["TipoSeguro"].ToString(), "|", (i + 1), "|", "TipoSeguro"),string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Equipamento"].ToString(), "|", (i + 1), "|", "Equipamento"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["ZeroKm"].ToString(), "|", (i + 1), "|", "ZeroKm"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Financiado"].ToString(), "|", (i + 1), "|", "Financiado"), string.Empty));
+
+                if (string.IsNullOrEmpty(ValidarCampos(string.Concat(dt.Rows[i]["Produto"].ToString(), "|", (i + 1), "|", "Produto"), int.MinValue))) 
+                {
+                    if (dt.Rows[i]["Produto"].ToString() == "7187") 
+                    {
+                        erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["PerguntaFinanciadoLeasing"].ToString(), "|", (i + 1), "|", "PerguntaFinanciadoLeasing"), string.Empty));
+                        erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["PerguntaPodeSerLocadoEventualmente"].ToString(), "|", (i + 1), "|", "PerguntaPodeSerLocadoEventualmente"), string.Empty));
+                        erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["PerguntaEquipamentoUtilizadoEmpreitada"].ToString(), "|", (i + 1), "|", "PerguntaEquipamentoUtilizadoEmpreitada"), string.Empty));
+                    }
+                }
+
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Ano"].ToString(), "|", (i + 1), "|", "Ano"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroCep"].ToString(), "|", (i + 1), "|", "NumeroCep"), string.Empty, true));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["NumeroLocal"].ToString(), "|", (i + 1), "|", "NumeroLocal"), string.Empty));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["ValorRisco"].ToString(), "|", (i + 1), "|", "ValorRisco"), decimal.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["Comissao"].ToString(), "|", (i + 1), "|", "Comissao"), double.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["CodigoCoberturaBasica"].ToString(), "|", (i + 1), "|", "CodigoCoberturaBasica"), int.MinValue));
+                erroCampos.AppendLine(ValidarCampos(string.Concat(dt.Rows[i]["LmiCoberturaBasica"].ToString(), "|", (i + 1), "|", "LmiCoberturaBasica"), decimal.MinValue));
 
                 DataRow row = dt.Rows[i];
                 int contadorCoberburasAdicional = 1;
-                int qtdColunasAdicional = row.Table.Columns.Count - 15;
-                for (int j = 16; j < qtdColunasAdicional; j+=2)
+                int qtdColunasAdicional = row.Table.Columns.Count - 20;
+                for (int j = 21; j < qtdColunasAdicional; j+=2)
                 {
                     string cobeAdicional = row["Adicional" + contadorCoberburasAdicional].ToString();
                     string lmiAdicional = row["LMI"+ contadorCoberburasAdicional].ToString();
@@ -479,6 +493,30 @@ namespace Epo.Calculo.Web
             if (string.IsNullOrEmpty(campos[0])) 
             {
                 mensagem = MsgCampoObrigatorio(campos);
+            }
+            return mensagem;
+        }
+
+        public string ValidarCampos(string campo, string tipoCampo, bool cep)
+        {
+            string mensagem = string.Empty;
+            string[] campos = campo.Split('|');
+
+            if (cep) 
+            {
+                if (string.IsNullOrEmpty(campos[0]))
+                {
+                    mensagem = MsgCampoObrigatorio(campos);
+                }
+                else 
+                {
+                    Regex Rgx = new Regex(@"^\d{8}$");
+
+                    if (!Rgx.IsMatch(campos[0])) 
+                    {
+                        mensagem = MsgCampoInvalido(campos);
+                    }
+                }
             }
             return mensagem;
         }

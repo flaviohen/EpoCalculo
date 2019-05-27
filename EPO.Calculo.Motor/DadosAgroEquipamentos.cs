@@ -7,6 +7,7 @@ namespace EPO.Calculo.Motor
 {
     public class DadosAgroEquipamentos
     {
+        public int Produto { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public string TipoPessoa { get; set; }
@@ -18,8 +19,12 @@ namespace EPO.Calculo.Motor
         public string SeguradoAnterior { get; set; }
         public string AnosExperiencia { get; set; }
         public double SinistroPremio { get; set; }
-        public int Equipamento { get; set; }
+        public string PerguntaFinanciadoLeasing { get; set; }
+        public string PerguntaPodeSerLocadoEventualmente { get; set; }
+        public string PerguntaEquipamentoUtilizadoEmpreitada { get; set; }
         public string Financiado { get; set; }
+        public int Equipamento { get; set; }
+        public string ZeroKm { get; set; }
         public int Ano { get; set; }
         public string Chassi { get; set; }
         public string Fabricante { get; set; }
