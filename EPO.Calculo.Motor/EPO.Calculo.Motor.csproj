@@ -48,9 +48,11 @@
     <Compile Include="DadosAgroEquipamentos.cs" />
     <Compile Include="EpoCalculo.cs" />
     <Compile Include="Filme.cs" />
+    <Compile Include="Pergunta.cs" />
     <Compile Include="Pessoa.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resposta.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
